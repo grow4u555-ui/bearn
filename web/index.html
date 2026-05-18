@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BEarn - Bandwidth Earner</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;transition:background 0.3s,color 0.3s,border 0.3s;}
+body{min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;}
+
+/* === THEMES === */
+body.dark{background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);color:#fff;}
+body.dark .container{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);}
+body.dark input{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;}
+body.dark input:focus{border-color:#00d2ff;}
+body.dark .card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);}
+body.dark .stat-card{background:rgba(255,255,255,0.07);}
+body.dark .tab-bar{background:rgba(255,255,255,0.05);}
+body.dark .tab{color:#888;}
+body.dark .tab.active{background:rgba(0,210,255,0.15);color:#00d2ff;}
+body.dark .tx-item{border-bottom:1px solid rgba(255,255,255,0.05);color:#ccc;}
+body.dark .footer{color:#555;}
+body.dark select{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;}
+
+body.light{background:linear-gradient(135deg,#e0e5ec,#f0f4f8,#d9e2ec);color:#1a1a2e;}
+body.light .container{background:rgba(255,255,255,0.85);border:1px solid rgba(0,0,0,0.1);backdrop-filter:blur(10px);}
+body.light input{background:rgba(0,0,0,0.04);border:1px solid rgba(0,0,0,0.15);color:#1a1a2e;}
+body.light input:focus{border-color:#4361ee;}
+body.light .card{background:rgba(0,0,0,0.03);border:1px solid rgba(0,0,0,0.08);}
+body.light .stat-card{background:rgba(0,0,0,0.03);}
+body.light .tab-bar{background:rgba(0,0,0,0.04);}
+body.light .tab{color:#666;}
+body.light .tab.active{background:rgba(67,97,238,0.1);color:#4361ee;}
+body.light .tx-item{border-bottom:1px solid rgba(0,0,0,0.06);color:#444;}
+body.light .footer{color:#999;}
+body.light select{background:rgba(0,0,0,0.04);border:1px solid rgba(0,0,0,0.15);color:#1a1a2e;}
+body.light .btn{background:linear-gradient(90deg,#4361ee,#3a7bd5);}
+body.light .btn-secondary{background:linear-gradient(90deg,#7209b7,#560bad);}
+body.light .gradient-text{background:linear-gradient(90deg,#4361ee,#3a7bd5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+
+body.hacker{background:#0d0d0d;color:#00ff41;}
+body.hacker *{font-family:'Courier New',monospace !important;}
+body.hacker .container{background:#0a0a0a;border:1px solid #00ff41;box-shadow:0 0 20px rgba(0,255,65,0.1);}
+body.hacker input{background:#111;border:1px solid #00ff41;color:#00ff41;}
+body.hacker input::placeholder{color:#0a5a0a;}
+body.hacker input:focus{border-color:#00ff41;box-shadow:0 0 10px rgba(0,255,65,0.2);}
+body.hacker .card{background:#0a0a0a;border:1px solid #00ff41;}
+body.hacker .stat-card{background:#0d0d0d;border:1px solid #0a5a0a;}
+body.hacker .stat-card .label{color:#0a5a0a;}
+body.hacker .tab-bar{background:#0a0a0a;border:1px solid #0a5a0a;}
+body.hacker .tab{color:#0a5a0a;}
+body.hacker .tab.active{background:rgba(0,255,65,0.05);color:#00ff41;border:1px solid #00ff41;}
+body.hacker .tx-item{border-bottom:1px solid #0a5a0a;color:#00ff41;}
+body.hacker .btn{background:#0a0a0a;border:1px solid #00ff41;color:#00ff41;border-radius:0;}
+body.hacker .btn:hover{background:#00ff41;color:#000;box-shadow:0 0 20px rgba(0,255,65,0.3);}
+body.hacker .btn-secondary{background:#0a0a0a;border:1px solid #0a5a0a;color:#0a5a0a;border-radius:0;}
+body.hacker .btn-secondary:hover{background:#0a5a0a;color:#000;}
+body.hacker h1.gradient-text{background:none;color:#00ff41;-webkit-text-fill-color:#00ff41;text-shadow:0 0 10px rgba(0,255,65,0.3);}
+body.hacker .gradient-text{background:none;color:#00ff41;-webkit-text-fill-color:#00ff41;}
+body.hacker select{background:#111;border:1px solid #00ff41;color:#00ff41;}
+body.hacker .toast{background:#00ff41;color:#000;border-radius:0;border:1px solid #00ff41;}
+body.hacker .toast.error{background:#ff0040;color:#fff;border:1px solid #ff0040;}
+body.hacker .status-dot.active{background:#00ff41;box-shadow:0 0 15px #00ff41;}
+body.hacker .footer{color:#0a5a0a;}
+body.hacker .theme-btn{background:#111;border:1px solid #0a5a0a;color:#0a5a0a;}
+body.hacker .theme-btn.active{background:#00ff41;color:#000;border-color:#00ff41;box-shadow:0 0 10px rgba(0,255,65,0.2);}
+
+.container{width:460px;max-width:100%;border-radius:20px;padding:30px;box-shadow:0 20px 60px rgba(0,0,0,0.5);}
+h1{text-align:center;margin-bottom:20px;font-size:26px;}
+.gradient-text{background:linear-gradient(90deg,#00d2ff,#3a7bd5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.form-group{margin-bottom:14px;}
+label{display:block;margin-bottom:4px;font-size:12px;opacity:0.7;}
+input,select{width:100%;padding:11px 14px;border-radius:10px;font-size:14px;outline:none;}
+.btn{width:100%;padding:12px;border:none;border-radius:10px;color:#fff;font-size:15px;font-weight:600;cursor:pointer;margin-top:10px;background:linear-gradient(90deg,#00d2ff,#3a7bd5);}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,210,255,0.3);}
+.btn-secondary{background:linear-gradient(90deg,#667eea,#764ba2);}
+.btn-sm{padding:8px 16px;font-size:12px;width:auto;margin:0;}
+.link{text-align:center;margin-top:12px;font-size:13px;cursor:pointer;opacity:0.7;}
+.link:hover{opacity:1;text-decoration:underline;}
+.hidden{display:none !important;}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0;}
+.stat-card{border-radius:12px;padding:14px;text-align:center;}
+.stat-card .value{font-size:22px;font-weight:700;color:#00d2ff;}
+.stat-card .label{font-size:11px;opacity:0.5;margin-top:4px;}
+.stat-card.green .value{color:#00e676;}
+.stat-card.gold .value{color:#ffd740;}
+.card{border-radius:12px;padding:14px;margin-bottom:12px;}
+.card h3{font-size:14px;margin-bottom:8px;}
+.tab-bar{display:flex;border-radius:10px;overflow:hidden;margin-bottom:18px;}
+.tab{flex:1;padding:10px;text-align:center;cursor:pointer;font-size:12px;}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);padding:12px 25px;border-radius:10px;font-weight:600;opacity:0;z-index:9999;pointer-events:none;transition:opacity 0.4s;}
+.toast.show{opacity:1;}
+.toast.error{background:#ff5252;color:#fff;}
+.toast.success{background:#00e676;color:#000;}
+.ref-box{display:flex;gap:8px;}
+.ref-box input{flex:1;}
+.ref-box button{padding:11px 15px;background:#00d2ff;border:none;border-radius:8px;color:#000;font-weight:600;cursor:pointer;}
+.theme-selector{display:flex;gap:8px;margin:12px 0;}
+.theme-btn{flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);color:inherit;cursor:pointer;font-size:11px;text-align:center;}
+.theme-btn.active{border-color:#00d2ff;background:rgba(0,210,255,0.15);color:#00d2ff;font-weight:600;}
+.data-control{padding:18px;text-align:center;margin:12px 0;border:1px solid rgba(255,255,255,0.08);border-radius:12px;}
+.speed-text{font-size:13px;opacity:0.6;margin:6px 0;}
+.status-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;}
+.status-dot.active{background:#00e676;box-shadow:0 0 10px #00e676;animation:pulse 1s infinite;}
+.status-dot.inactive{background:#ff5252;}
+@keyframes pulse{0%,100%{box-shadow:0 0 5px #00e676;}50%{box-shadow:0 0 15px #00e676;}}
+.tx-list{max-height:180px;overflow-y:auto;}
+.tx-item{display:flex;justify-content:space-between;padding:7px 0;font-size:12px;}
+.tx-item .pos{color:#00e676;}
+.tx-item .neg{color:#ff5252;}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-thumb{background:#00d2ff;border-radius:2px;}
+.p2p-status{padding:12px;border-radius:10px;margin:10px 0;font-size:12px;text-align:center;}
+.p2p-status.connecting{border:1px solid #ffd740;color:#ffd740;}
+.p2p-status.connected{border:1px solid #00e676;color:#00e676;}
+.p2p-status.error{border:1px solid #ff5252;color:#ff5252;}
+.footer{text-align:center;font-size:10px;margin-top:15px;}
+</style>
+</head>
+<body class="dark">
+
+<div id="toast" class="toast"></div>
+
+<div class="container">
+  <h1 class="gradient-text" id="appTitle">🌐 BEarn</h1>
+
+  <!-- LOGIN FORM -->
+  <div id="loginForm">
+    <h2 id="loginTitle">Login / Register</h2>
+    <div class="form-group">
+      <label id="lUser">Username</label>
+      <input type="text" id="authUser" placeholder="username">
+    </div>
+    <div class="form-group" id="emailGroup">
+      <label id="lEmail">Email</label>
+      <input type="email" id="authEmail" placeholder="email@example.com">
+    </div>
+    <div class="form-group">
+      <label id="lPass">Password</label>
+      <input type="password" id="authPass" placeholder="••••••••">
+    </div>
+    <div class="form-group" id="refGroup">
+      <label id="lRef">Referral Code (optional)</label>
+      <input type="text" id="authRef" placeholder="referral code">
+    </div>
+    <button class="btn" id="authBtn" onclick="doAuth()">Login</button>
+    <div class="link" id="toggleAuth" onclick="toggleAuth()">Switch to Register</div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="hidden">
+    
+    <!-- Top Controls -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <span id="welcomeUser" style="font-size:13px;opacity:0.7;"></span>
+      <div style="display:flex;gap:6px;">
+        <select id="langSelect" onchange="changeLang(this.value)" style="width:auto;padding:5px 8px;font-size:11px;border-radius:6px;">
+          <option value="bn">বাংলা</option>
+          <option value="en">English</option>
+        </select>
+        <button id="logoutBtn" class="btn-sm btn-secondary" onclick="doLogout()" style="padding:5px 10px;font-size:11px;margin:0;">✕</button>
+      </div>
+    </div>
+
+    <!-- Theme Selector -->
+    <div class="theme-selector">
+      <div class="theme-btn active" data-theme="dark" onclick="setTheme('dark')">🌙 Dark</div>
+      <div class="theme-btn" data-theme="light" onclick="setTheme('light')">☀️ Light</div>
+      <div class="theme-btn" data-theme="hacker" onclick="setTheme('hacker')">💚 Hacker</div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tab-bar">
+      <div class="tab active" onclick="switchTab('main')" id="tabMain">Dashboard</div>
+      <div class="tab" onclick="switchTab('ref')" id="tabRef">Referrals</div>
+      <div class="tab" onclick="switchTab('tx')" id="tabTx">History</div>
+      <div class="tab" onclick="switchTab('engine')" id="tabEngine">Engine</div>
+    </div>
+
+    <!-- TAB: MAIN -->
+    <div id="tabMainContent">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="value" id="balance">$0.00</div><div class="label" id="lBalance">Wallet</div></div>
+        <div class="stat-card green"><div class="value" id="totalData">0 GB</div><div class="label" id="lData">Total Data</div></div>
+        <div class="stat-card gold"><div class="value" id="totalEarn">$0.00</div><div class="label" id="lEarn">Total Earned</div></div>
+        <div class="stat-card"><div class="value" id="todayGb">0 GB</div><div class="label" id="lToday">Today</div></div>
+      </div>
+
+      <!-- Quick Engine Control -->
+      <div class="card">
+        <h3 id="lEngineQuick">⚡ Engine Quick Control</h3>
+        <div style="display:flex;align-items:center;gap:10px;margin:6px 0;">
+          <span class="status-dot inactive" id="statusDot"></span>
+          <span id="statusText" style="font-size:13px;opacity:0.7;">Stopped</span>
+          <span style="flex:1;"></span>
+          <span id="speedDisplay" style="font-size:12px;opacity:0.5;">0 MB/s</span>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-sm" id="startBtn" onclick="startEngine()" style="flex:1;">▶ Start</button>
+          <button class="btn btn-sm btn-secondary hidden" id="stopBtn" onclick="stopEngine()" style="flex:1;">⏹ Stop</button>
+          <select id="threadSelect" onchange="changeThreads(this.value)" style="width:80px;padding:8px;font-size:12px;">
+            <option value="5">5T</option>
+            <option value="10" selected>10T</option>
+            <option value="15">15T</option>
+            <option value="20">20T</option>
+            <option value="30">30T</option>
+            <option value="50">50T</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Referral Link -->
+      <div class="card">
+        <h3 id="lRefTitle">🔗 Referral Link</h3>
+        <div class="ref-box">
+          <input type="text" id="refLink" readonly>
+          <button onclick="copyRef()" id="copyBtn">📋 Copy</button>
+        </div>
+      </div>
+
+      <!-- Withdraw -->
+      <div class="card">
+        <h3 id="lWithdraw">💳 Withdraw</h3>
+        <div style="display:flex;gap:8px;">
+          <input type="number" id="wdAmount" placeholder="$ amount" min="5" step="0.5" style="flex:1;">
+          <button class="btn btn-sm btn-secondary" onclick="doWithdraw()" style="margin:0;">Withdraw</button>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <button class="btn-sm btn-secondary" style="flex:1;font-size:10px;background:#1877f2;" onclick="wdMethod('PayPal')">PayPal</button>
+          <button class="btn-sm btn-secondary" style="flex:1;font-size:10px;background:#e94560;" onclick="wdMethod('bKash')">bKash</button>
+          <button class="btn-sm btn-secondary" style="flex:1;font-size:10px;background:#7c3aed;" onclick="wdMethod('Nagad')">Nagad</button>
+        </div>
+        <p style="font-size:10px;opacity:0.4;margin-top:5px;" id="lWdNote">Min $5 | Rate: $0.50/GB</p>
+      </div>
+    </div>
+
+    <!-- TAB: REFERRALS -->
+    <div id="tabRefContent" class="hidden">
+      <div class="card">
+        <h3 id="lRefList">👥 Referrals</h3>
+        <p class="footer" id="lRefInfo">$0.50 bonus per referral + 10% of their earnings</p>
+        <div class="tx-list" id="refList"><p class="footer" id="lNoRef">No referrals yet</p></div>
+      </div>
+    </div>
+
+    <!-- TAB: TRANSACTIONS -->
+    <div id="tabTxContent" class="hidden">
+      <div class="card">
+        <h3 id="lTxTitle">📊 Transaction History</h3>
+        <div class="tx-list" id="txList"><p class="footer" id="lNoTx">No transactions</p></div>
+      </div>
+    </div>
+
+    <!-- TAB: ENGINE SETTINGS -->
+    <div id="tabEngineContent" class="hidden">
+      <div class="card">
+        <h3 id="lEngTitle">⚙️ Advanced Engine</h3>
+        <div class="form-group">
+          <label id="lThreads">Threads (1-50)</label>
+          <input type="number" id="engineThreads" value="10" min="1" max="50" onchange="changeThreads(this.value)">
+        </div>
+        <div class="form-group">
+          <label id="lSpeed">Speed Mode</label>
+          <select id="speedMode" onchange="changeSpeedMode(this.value)">
+            <option value="normal" id="optNormal">Normal (~5GB/hr)</option>
+            <option value="turbo" id="optTurbo">Turbo (~10GB/hr)</option>
+            <option value="max" id="optMax">MAX (~20GB/hr) 🔥</option>
+          </select>
+        </div>
+        <div class="p2p-status connecting" id="p2pStatus">
+          <span id="p2pText">● Connecting to relay server...</span>
+        </div>
+        <button class="btn" id="engineStartBtn" onclick="startEngine()">▶ Start Engine</button>
+        <button class="btn btn-secondary hidden" id="engineStopBtn" onclick="stopEngine()">⏹ Stop Engine</button>
+        <div style="margin-top:10px;color:#00e676;font-size:13px;text-align:center;">
+          <span id="sessionDisplay">Session: 0.00 GB | $0.00</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer" id="footerText">BEarn v2.0 | $0.50/GB | Passive Income</div>
+  </div>
+</div>
+
+<script>
+// ===== STATE =====
+const API = 'http://localhost:3000';
+let token = localStorage.getItem('be_token');
+let isReg = false;
+let engineOn = false;
+let engWorkers = [];
+let engInterval = null;
+let sessionGb = 0;
+let sessionEarn = 0;
+let ws = null;
+
+// ===== LANG =====
+const LANG = {
+  en: {
+    appTitle: '🌐 BEarn',
+    loginTitle: 'Login / Register',
+    lUser: 'Username', lEmail: 'Email', lPass: 'Password', lRef: 'Referral Code (optional)',
+    authBtn: 'Login', toggleReg: 'Switch to Register', toggleLog: 'Switch to Login',
+    lBalance: 'Wallet', lData: 'Total Data', lEarn: 'Total Earned', lToday: 'Today',
+    lEngineQuick: '⚡ Engine Quick Control',
+    lRefTitle: '🔗 Referral Link', copyBtn: '📋 Copy',
+    lWithdraw: '💳 Withdraw', lWdNote: 'Min $5 | Rate: $0.50/GB',
+    lRefList: '👥 Referrals', lRefInfo: '$0.50 bonus per referral + 10% of their earnings',
+    lNoRef: 'No referrals yet',
+    lTxTitle: '📊 Transaction History', lNoTx: 'No transactions',
+    lEngTitle: '⚙️ Advanced Engine', lThreads: 'Threads (1-50)', lSpeed: 'Speed Mode',
+    optNormal: 'Normal (~5GB/hr)', optTurbo: 'Turbo (~10GB/hr)', optMax: 'MAX (~20GB/hr) 🔥',
+    statusStopped: 'Stopped', statusRunning: 'Running',
+    tabMain: 'Dashboard', tabRef: 'Referrals', tabTx: 'History', tabEngine: 'Engine',
+    startBtn: '▶ Start', stopBtn: '⏹ Stop',
+    p2pConnecting: '● Connecting to relay server...',
+    p2pConnected: '● Connected to P2P relay',
+    p2pError: '● Connection error - check server',
+    footerText: 'BEarn v2.0 | $0.50/GB | Passive Income',
+    welcomeUser: (u) => `Welcome, ${u}`,
+    sessionText: (g, e) => `Session: ${g.toFixed(2)} GB | $${e.toFixed(2)}`,
+    speedText: (s) => `${s.toFixed(1)} MB/s`,
+    earned: (g, e) => `✅ ${g.toFixed(2)}GB → +$${e.toFixed(2)}`,
+    minWithdraw: 'Min $5', insuff: 'Insufficient balance',
+    copied: '✅ Copied!', wdSent: '✅ Withdrawal request sent!',
+    errServer: 'Server error', errAuth: 'Invalid credentials'
+  },
+  bn: {
+    appTitle: '🌐 BEarn',
+    loginTitle: 'লগইন / রেজিস্টার',
+    lUser: 'ইউজারনেম', lEmail: 'ইমেইল', lPass: 'পাসওয়ার্ড', lRef: 'রেফারেল কোড (ঐচ্ছিক)',
+    authBtn: 'লগইন', toggleReg: 'রেজিস্টার মোডে যান', toggleLog: 'লগইন মোডে যান',
+    lBalance: 'ওয়ালেট', lData: 'মোট ডাটা', lEarn: 'মোট আয়', lToday: 'আজ',
+    lEngineQuick: '⚡ ইঞ্জিন কুইক কন্ট্রোল',
+    lRefTitle: '🔗 রেফারেল লিংক', copyBtn: '📋 কপি',
+    lWithdraw: '💳 উইথড্র', lWdNote: 'ন্যূনতম $৫ | রেট: $০.৫০/GB',
+    lRefList: '👥 রেফারেল', lRefInfo: 'প্রতি রেফারেলে $০.৫০ বোনাস + তাদের আয়ের ১০%',
+    lNoRef: 'কোন রেফারেল নেই', lTxTitle: '📊 লেনদেনের ইতিহাস', lNoTx: 'কোন লেনদেন নেই',
+    lEngTitle: '⚙️ অ্যাডভান্সড ইঞ্জিন', lThreads: 'থ্রেড (১-৫০)', lSpeed: 'স্পীড মোড',
+    optNormal: 'নরমাল (~৫GB/ঘন্টা)', optTurbo: 'টার্বো (~১০GB/ঘন্টা)', optMax: 'ম্যাক্স (~২০GB/ঘন্টা) 🔥',
+    statusStopped: 'বন্ধ', statusRunning: 'চালু',
+    tabMain: 'ড্যাশবোর্ড', tabRef: 'রেফারেল', tabTx: 'হিসাব', tabEngine: 'ইঞ্জিন',
+    startBtn: '▶ শুরু', stopBtn: '⏹ বন্ধ',
+    p2pConnecting: '● রিলে সার্ভারে কানেক্ট হচ্ছে...',
+    p2pConnected: '● P2P রিলে কানেক্টেড',
+    p2pError: '● কানেকশন এরর - সার্ভার চেক করুন',
+    footerText: 'BEarn v2.0 | $০.৫০/GB | প্যাসিভ ইনকাম',
+    welcomeUser: (u) => `স্বাগতম, ${u}`,
+    sessionText: (g, e) => `সেশন: ${g.toFixed(2)} GB | $${e.toFixed(2)}`,
+    speedText: (s) => `${s.toFixed(1)} MB/s`,
+    earned: (g, e) => `✅ ${g.toFixed(2)}GB → +$${e.toFixed(2)}`,
+    minWithdraw: 'ন্যূনতম $৫', insuff: 'ব্যালেন্স অপ্রতুল',
+    copied: '✅ কপি হয়েছে!', wdSent: '✅ উইথড্র রিকোয়েস্ট পাঠানো হয়েছে!',
+    errServer: 'সার্ভার এরর', errAuth: 'ভুল ইউজার বা পাসওয়ার্ড'
+  }
+};
+
+let lang = 'bn';
+function t(key) {
+  const l = LANG[lang] || LANG.bn;
+  if (typeof l[key] === 'function') return l[key];
+  return l[key] || key;
+}
+
+// ===== UI UTILS =====
+function showToast(msg, err = false) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast ' + (err ? 'error' : 'success') + ' show';
+  setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+function applyLang() {
+  document.querySelectorAll('[data-lang]').forEach(el => {
+    const key = el.dataset.lang;
+    el.textContent = t(key);
+  });
+  document.getElementById('appTitle').textContent = t('appTitle');
+  document.getElementById('loginTitle').textContent = t('loginTitle');
+  document.getElementById('lUser').textContent = t('lUser');
+  document.getElementById('lEmail').textContent = t('lEmail');
+  document.getElementById('lPass').textContent = t('lPass');
+  document.getElementById('lRef').textContent = t('lRef');
+  document.getElementById('authBtn').textContent = t('authBtn');
+  document.getElementById('lBalance').textContent = t('lBalance');
+  document.getElementById('lData').textContent = t('lData');
+  document.getElementById('lEarn').textContent = t('lEarn');
+  document.getElementById('lToday').textContent = t('lToday');
+  document.getElementById('lEngineQuick').textContent = t('lEngineQuick');
+  document.getElementById('lRefTitle').textContent = t('lRefTitle');
+  document.getElementById('copyBtn').textContent = t('copyBtn');
+  document.getElementById('lWithdraw').textContent = t('lWithdraw');
+  document.getElementById('lWdNote').textContent = t('lWdNote');
+  document.getElementById('lRefList').textContent = t('lRefList');
+  document.getElementById('lRefInfo').textContent = t('lRefInfo');
+  document.getElementById('lTxTitle').textContent = t('lTxTitle');
+  document.getElementById('lEngTitle').textContent = t('lEngTitle');
+  document.getElementById('lThreads').textContent = t('lThreads');
+  document.getElementById('lSpeed').textContent = t('lSpeed');
+  document.getElementById('optNormal').textContent = t('optNormal');
+  document.getElementById('optTurbo').textContent = t('optTurbo');
+  document.getElementById('optMax').textContent = t('optMax');
+  document.getElementById('tabMain').textContent = t('tabMain');
+  document.getElementById('tabRef').textContent = t('tabRef');
+  document.getElementById('tabTx').textContent = t('tabTx');
+  document.getElementById('tabEngine').textContent = t('tabEngine');
+  document.getElementById('footerText').textContent = t('footerText');
+  document.getElementById('statusText').textContent = engineOn ? t('statusRunning') : t('statusStopped');
+  if (!engineOn) {
+    document.getElementById('startBtn').textContent = t('startBtn');
+    document.getElementById('engineStartBtn').textContent = t('startBtn');
+  } else {
+    document.getElementById('stopBtn').textContent = t('stopBtn');
+    document.getElementById('engineStopBtn').textContent = t('stopBtn');
+  }
+}
+
+// ===== THEME =====
+function setTheme(theme) {
+  document.body.className = theme;
+  document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.theme-btn[data-theme="${theme}"]`).classList.add('active');
+  localStorage.setItem('be_theme', theme);
+  if (token) {
+    fetch(API + '/api/settings/theme', {
+      method: 'POST', headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body: JSON.stringify({theme})
+    }).catch(()=>{});
+  }
+}
+
+function changeLang(l) {
+  lang = l;
+  localStorage.setItem('be_lang', l);
+  applyLang();
+  if (token) {
+    fetch(API + '/api/settings/lang', {
+      method: 'POST', headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body: JSON.stringify({lang:l})
+    }).catch(()=>{});
+  }
+}
+
+// ===== AUTH =====
+function toggleAuth() {
+  isReg = !isReg;
+  document.getElementById('loginTitle').textContent = isReg ? 'রেজিস্টার' : 'লগইন';
+  document.getElementById('authBtn').textContent = isReg ? 'রেজিস্টার' : 'লগইন';
+  document.getElementById('emailGroup').style.display = isReg ? 'block' : 'none';
+  document.getElementById('refGroup').style.display = isReg ? 'block' : 'none';
+  document.getElementById('toggleAuth').textContent = isReg ? 'Switch to Login' : 'Switch to Register';
+}
+
+async function doAuth() {
+  const username = document.getElementById('authUser').value;
+  const pass = document.getElementById('authPass').value;
+  const email = document.getElementById('authEmail').value;
+  const ref = document.getElementById('authRef').value;
+  if (!username || !pass) return showToast('Fill all fields', true);
+
+  const endpoint = isReg ? '/api/auth/register' : '/api/auth/login';
+  const body = isReg ? {username, password:pass, email, ref} : {username, password:pass};
+
+  try {
+    const r = await fetch(API + endpoint, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+    const d = await r.json();
+    if (d.error) return showToast(d.error === 'invalid' ? t('errAuth') : d.error, true);
+    token = d.token;
+    localStorage.setItem('be_token', token);
+    if (d.theme) setTheme(d.theme);
+    if (d.lang) { lang = d.lang; document.getElementById('langSelect').value = lang; }
+    showToast('✅ Success!');
+    loadDash();
+  } catch(e) {
+    showToast(t('errServer'), true);
+  }
+}
+
+// ===== DASHBOARD =====
+async function loadDash() {
+  if (!token) return;
+  document.getElementById('loginForm').classList.add('hidden');
+  document.getElementById('dashboard').classList.remove('hidden');
+  
+  try {
+    const r = await fetch(API + '/api/profile', {headers: {'Authorization':'Bearer '+token}});
+    const d = await r.json();
+    document.getElementById('balance').textContent = '$' + (d.wallet_balance||0).toFixed(2);
+    document.getElementById('totalData').textContent = (d.total_data_gb||0).toFixed(2) + ' GB';
+    document.getElementById('totalEarn').textContent = '$' + (d.earnings||0).toFixed(2);
+    document.getElementById('refLink').value = d.referral_code || '';
+    document.getElementById('welcomeUser').textContent = t('welcomeUser')(d.username || '');
+    if (d.theme) setTheme(d.theme);
+    if (d.lang) { lang = d.lang; document.getElementById('langSelect').value = d.lang; applyLang(); }
+    loadTx(); loadRef();
+    connectWS();
+  } catch(e) { showToast(t('errServer'), true); }
+}
+
+function connectWS() {
+  if (ws) try { ws.close(); } catch(e) {}
+  try {
+    ws = new WebSocket('ws://localhost:3000?token=' + token);
+    ws.onopen = () => {
+      document.getElementById('p2pStatus').className = 'p2p-status connected';
+      document.getElementById('p2pText').textContent = t('p2pConnected');
+    };
+    ws.onmessage = (e) => {
+      try {
+        const m = JSON.parse(e.data);
+        if (m.type === 'earned') {
+          showToast(t('earned')(m.gb, m.earn));
+          loadDash();
+        }
+      } catch(e) {}
+    };
+    ws.onclose = () => {
+      document.getElementById('p2pStatus').className = 'p2p-status error';
+      document.getElementById('p2pText').textContent = t('p2pError');
+      setTimeout(connectWS, 5000);
+    };
+  } catch(e) {}
+}
+
+async function loadTx() {
+  try {
+    const r = await fetch(API + '/api/transactions', {headers: {'Authorization':'Bearer '+token}});
+    const d = await r.json();
+    const el = document.getElementById('txList');
+    if (!d || !d.length) { el.innerHTML = '<p class="footer">'+t('lNoTx')+'</p>'; return; }
+    el.innerHTML = d.map(t => `<div class="tx-item"><span>${t.description}</span><span class="${t.amount>0?'pos':'neg'}">${t.amount>0?'+':''}$${t.amount.toFixed(2)}</span></div>`).join('');
+  } catch(e) {}
+}
+
+async function loadRef() {
+  try {
+    const r = await fetch(API + '/api/referrals', {headers: {'Authorization':'Bearer '+token}});
+    const d = await r.json();
+    const el = document.getElementById('refList');
+    if (!d || !d.length) { el.innerHTML = '<p class="footer">'+t('lNoRef')+'</p>'; return; }
+    el.innerHTML = d.map(r => `<div class="tx-item"><span>👤 ${r.username}</span><span class="pos">+$${r.bonus.toFixed(2)}</span></div>`).join('');
+  } catch(e) {}
+}
+
+function copyRef() {
+  const el = document.getElementById('refLink');
+  el.select(); document.execCommand('copy');
+  showToast(t('copied'));
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  ['main','ref','tx','engine'].forEach(t => document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)+'Content').classList.add('hidden'));
+  if (tab === 'main') { document.getElementById('tabMainContent').classList.remove('hidden'); document.querySelectorAll('.tab')[0].classList.add('active'); }
+  else if (tab === 'ref') { document.getElementById('tabRefContent').classList.remove('hidden'); document.querySelectorAll('.tab')[1].classList.add('active'); }
+  else if (tab === 'tx') { document.getElementById('tabTxContent').classList.remove('hidden'); document.querySelectorAll('.tab')[2].classList.add('active'); }
+  else if (tab === 'engine') { document.getElementById('tabEngineContent').classList.remove('hidden'); document.querySelectorAll('.tab')[3].classList.add('active'); }
+}
+
+function doWithdraw() {
+  const amt = parseFloat(document.getElementById('wdAmount').value);
+  if (!amt || amt < 5) return showToast(t('minWithdraw'), true);
+  fetch(API + '/api/withdraw', {
+    method: 'POST', headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
+    body: JSON.stringify({amount:amt})
+  }).then(r=>r.json()).then(d=>{
+    if (d.error === 'insufficient') return showToast(t('insuff'), true);
+    showToast(t('wdSent')); loadDash();
+  }).catch(()=>showToast(t('errServer'),true));
+}
+
+function wdMethod(m) {
+  const amt = parseFloat(document.getElementById('wdAmount').value);
+  if (!amt || amt < 5) return showToast(t('minWithdraw'), true);
+  showToast(`✅ $${amt} ${m} requested!`);
+}
+
+function doLogout() {
+  if (engineOn) stopEngine();
+  if (ws) try { ws.close(); } catch(e) {}
+  localStorage.removeItem('be_token'); token = null;
+  document.getElementById('loginForm').classList.remove('hidden');
+  document.getElementById('dashboard').classList.add('hidden');
+}
+
+// ===== ENGINE =====
+const URL_POOL = [
+  'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920',
+  'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?w=1920',
+  'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1920',
+  'https://images.unsplash.com/photo-1476224203421-9ac39bcb332e?w=1920',
+  'https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=1920',
+  'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=1920',
+  'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=1920',
+  'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=1920',
+  'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=1920',
+  'https://images.unsplash.com/photo-1496412705862-e00831583e64?w=1920',
+  'https://fastly.picsum.photos/id/1/2000/2000.jpg',
+  'https://fastly.picsum.photos/id/10/2000/2000.jpg',
+  'https://fastly.picsum.photos/id/100/2000/2000.jpg',
+  'https://fastly.picsum.photos/id/1000/2000/2000.jpg',
+  'https://fastly.picsum.photos/id/101/2000/2000.jpg'
+];
+
+let engBytes = 0;
+let engSpeed = 0;
+
+function startEngine() {
+  if (engineOn) return;
+  engineOn = true;
+  const threads = parseInt(document.getElementById('threadSelect')?.value || 10);
+  
+  document.getElementById('startBtn').classList.add('hidden');
+  document.getElementById('stopBtn').classList.remove('hidden');
+  document.getElementById('engineStartBtn').classList.add('hidden');
+  document.getElementById('engineStopBtn').classList.remove('hidden');
+  document.getElementById('statusDot').className = 'status-dot active';
+  document.getElementById('statusText').textContent = t('statusRunning');
+
+  for (let i = 0; i < threads; i++) {
+    const w = setInterval(() => {
+      fetch(URL_POOL[Math.floor(Math.random()*URL_POOL.length)])
+        .then(r => r.blob())
+        .then(b => {
+          engBytes += b.size;
+          engSpeed = b.size / ((Date.now() - startTimes[i])/1000 || 1) / (1024*1024);
+          updateEngineDisplay();
+        })
+        .catch(()=>{});
+      startTimes[i] = Date.now();
+    }, Math.random()*1500 + 500);
+    startTimes[i] = Date.now();
+    engWorkers.push(w);
+  }
+
+  engInterval = setInterval(() => {
+    const gb = engBytes / (1024*1024*1024);
+    if (gb > 0.01 && ws && ws.readyState === 1) {
+      ws.send(JSON.stringify({type:'data_report', gb}));
+      sessionGb += gb;
+      sessionEarn += gb * 0.50;
+      engBytes = 0;
+      updateEngineDisplay();
+      document.getElementById('todayGb').textContent = sessionGb.toFixed(2) + ' GB';
+      loadDash();
+    }
+  }, 30000);
+}
+
+let startTimes = [];
+
+function stopEngine() {
+  engineOn = false;
+  engWorkers.forEach(w => clearInterval(w));
+  engWorkers = [];
+  clearInterval(engInterval);
+  
+  document.getElementById('startBtn').classList.remove('hidden');
+  document.getElementById('stopBtn').classList.add('hidden');
+  document.getElementById('engineStartBtn').classList.remove('hidden');
+  document.getElementById('engineStopBtn').classList.add('hidden');
+  document.getElementById('statusDot').className = 'status-dot inactive';
+  document.getElementById('statusText').textContent = t('statusStopped');
+  document.getElementById('speedDisplay').textContent = '0 MB/s';
+  updateEngineDisplay();
+}
+
+function updateEngineDisplay() {
+  const totalGb = sessionGb + (engBytes / (1024*1024*1024));
+  const total$ = sessionEarn + (engBytes / (1024*1024*1024) * 0.50);
+  document.getElementById('speedDisplay').textContent = t('speedText')(engSpeed);
+  document.getElementById('sessionDisplay').textContent = t('sessionText')(totalGb, total$);
+  document.getElementById('todayGb').textContent = sessionGb.toFixed(2) + ' GB';
+}
+
+function changeThreads(val) {
+  const t = parseInt(val);
+  document.getElementById('engineThreads').value = t;
+  document.getElementById('threadSelect').value = t.toString();
+}
+
+function changeSpeedMode(mode) {
+  const map = {normal:10, turbo:20, max:40};
+  const t = map[mode] || 10;
+  document.getElementById('threadSelect').value = t.toString();
+  document.getElementById('engineThreads').value = t;
+  if (engineOn) { stopEngine(); startEngine(); }
+}
+
+// ===== INIT =====
+const savedTheme = localStorage.getItem('be_theme') || 'dark';
+const savedLang = localStorage.getItem('be_lang') || 'bn';
+lang = savedLang;
+setTheme(savedTheme);
+document.getElementById('langSelect').value = savedLang;
+applyLang();
+if (token) loadDash();
+</script>
+</body>
+</html>
