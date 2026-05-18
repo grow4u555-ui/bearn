@@ -252,6 +252,41 @@ const server = app.listen(PORT, () => {
   console.log('');
 });
 
+// ===== PROXY SETTINGS =====
+app.post('/api/proxy/report', auth, (req, res) => {
+  const { gb, mb } = req.body;
+  const dataGb = gb || (mb ? mb / 1024 : 0);
+  
+  if (dataGb <= 0) return res.status(400).json({ error: 'invalid' });
+  
+  const earn = dataGb * 0.50;
+  
+  db.run(
+    'UPDATE users SET total_data_gb=total_data_gb+?, earnings=earnings+?, wallet_balance=wallet_balance+? WHERE id=?',
+    [dataGb, earn, earn, req.user.id],
+    function(err) {
+      if (err) return res.status(500).json({ error: 'db_error' });
+      
+      db.run(
+        'INSERT INTO transactions (user_id,type,amount,data_gb,description) VALUES (?,?,?,?,?)',
+        [req.user.id, 'earned', earn, dataGb, `${dataGb.toFixed(4)}GB via proxy sharing`]
+      );
+      
+      res.json({ success: true, earned: earn, balance: `$${earn.toFixed(4)}` });
+    }
+  );
+});
+
+// ===== LIVE STATS =====
+app.get('/api/proxy/stats', auth, (req, res) => {
+  const stats = Object.entries(userSessions).map(([uid, d]) => ({
+    userId: uid,
+    dataGb: d.data_gb,
+    earnings: d.earnings
+  }));
+  res.json({ activeUsers: Object.keys(userSessions).length, stats });
+});
+
 server.on('upgrade', (req, s, head) => {
   wss.handleUpgrade(req, s, head, (ws) => wss.emit('connection', ws, req));
 });
